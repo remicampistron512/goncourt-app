@@ -1,0 +1,79 @@
+@startuml
+title Goncourt App - diagramme de cas d'utilisation
+
+left to right direction
+
+' --- Acteurs ---
+actor "Utilisateur" as User
+actor "Président du jury" as President
+actor "Membre du jury" as JuryMember
+
+' --- Spécialisation : le président et les membres du jury sont aussi des utilisateurs ---
+User <|-- President
+User <|-- JuryMember
+
+' --- Système ---
+rectangle "Goncourt App" as System {
+
+  ' --- Cas d’utilisation ouverts à tout utilisateur ---
+  usecase "Afficher les sélections\n(1ère, 2e, 3e, finale)" as UC_ViewSelections
+  usecase "Afficher les détails d'un livre\n(titre, résumé, auteur, éditeur,\npersonnages, date, nb pages, ISBN, prix)" as UC_ViewBookDetails
+
+  ' --- Cas d’utilisation réservés au Président (saisie manuelle) ---
+  usecase "Définir les livres\n de la 2e sélection" as UC_SetSecondSelection
+  usecase "Définir les livres\n de la 3e sélection" as UC_SetThirdSelection
+  usecase "Saisir le nombre de voix\npar livre au dernier tour" as UC_SetFinalVotes
+  usecase "Consulter les résultats\n du dernier tour (lauréat,\n autres finalistes)" as UC_ViewFinalResults
+
+  ' --- Cas d’utilisation futurs : authentification & vote membres ---
+  usecase "S'authentifier" as UC_Authenticate
+  usecase "Voter pour la 2e sélection" as UC_VoteSecond
+  usecase "Voter pour la 3e sélection" as UC_VoteThird
+  usecase "Voter pour le lauréat" as UC_VoteWinner
+  usecase "Calculer automatiquement\n les sélections et le lauréat" as UC_ComputeResults
+}
+
+' --- Relations acteurs / cas d’utilisation ---
+
+' Utilisateur générique
+User --> UC_ViewSelections
+User --> UC_ViewBookDetails
+
+' Président du jury (mode actuel : saisie manuelle)
+President --> UC_SetSecondSelection
+President --> UC_SetThirdSelection
+President --> UC_SetFinalVotes
+President --> UC_ViewFinalResults
+
+' Président / Membre du jury (mode futur avec authentification et vote)
+President --> UC_Authenticate
+JuryMember --> UC_Authenticate
+
+JuryMember --> UC_VoteSecond
+JuryMember --> UC_VoteThird
+JuryMember --> UC_VoteWinner
+
+' Le président pourra aussi voter dans le futur si souhaité
+President --> UC_VoteSecond
+President --> UC_VoteThird
+President --> UC_VoteWinner
+
+' --- Relations entre cas d’utilisation ---
+
+UC_ViewBookDetails ..> UC_ViewSelections : <<include>>
+
+' Les cas de vote nécessitent l'authentification
+UC_VoteSecond ..> UC_Authenticate : <<include>>
+UC_VoteThird ..> UC_Authenticate : <<include>>
+UC_VoteWinner ..> UC_Authenticate : <<include>>
+
+' Le calcul automatique des résultats dépend des votes saisis
+UC_ComputeResults ..> UC_VoteSecond : <<include>>
+UC_ComputeResults ..> UC_VoteThird : <<include>>
+UC_ComputeResults ..> UC_VoteWinner : <<include>>
+
+' La consultation des résultats finaux peut, dans le futur,
+' reposer sur le calcul automatique plutôt que sur une saisie manuelle
+UC_ViewFinalResults ..> UC_ComputeResults : <<include>>
+
+@enduml
