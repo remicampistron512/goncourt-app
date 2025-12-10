@@ -65,7 +65,7 @@ class BookDao(Dao[Book]):
                 isbn=record["boo_isbn"],
                 editor_price=price,
             )
-            book.id = record["boo_id"]
+            book.id_book = record["boo_id"]
             books.append(book)
 
         return books
@@ -97,7 +97,7 @@ class BookDao(Dao[Book]):
                 isbn=record["boo_isbn"],
                 editor_price=price,
             )
-            book.id = record["boo_id"]
+            book.id_book = record["boo_id"]
             books.append(book)
 
         return books

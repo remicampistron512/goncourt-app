@@ -21,9 +21,9 @@ class Book:
     editor_price: decimal.Decimal
 
     def __str__(self) -> str:
-        book_id = self.id_book if self.id_book is not None else "?"
+        id_book = self.id_book if self.id_book is not None else "?"
         return (
-            f"[Book #{book_id}] "
+            f"[Book #{id_book}] "
             f"'{self.book_title}' "
             f"({self.publishing_date:%Y-%m-%d}) - "
             f"{self.nb_pages} pages - "
