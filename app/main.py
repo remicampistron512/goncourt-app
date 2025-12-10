@@ -10,7 +10,7 @@ def main() -> None:
 
     goncourt: Goncourt = Goncourt()
 
-    show_all(goncourt)
+    #show_all(goncourt)
     """print("----- AJOUT DE LIVRES A LA PHASE 2 -----")
     book_id_list = [1,2,3,4,5,6,7,8]
     goncourt.set_books_for_phase(2,book_id_list)
@@ -20,6 +20,15 @@ def main() -> None:
     goncourt.set_books_for_phase(3,book_id_list2)"""
 
     goncourt.set_vote_for_book(2, 4, 2)
+    show_phase(goncourt,1)
+
+
+def show_phase(goncourt: Goncourt, phase_id) -> None:
+    phase = goncourt.get_phase_by_id(phase_id)
+    books = goncourt.get_all_books_by_phase(phase_id)
+    print(f"\n--- {phase.type} ---")
+    for b in books:
+        print(f"{b.id_book}: {b.book_title} ({b.isbn})")
 
 
 def show_all(goncourt: Goncourt) -> None:
