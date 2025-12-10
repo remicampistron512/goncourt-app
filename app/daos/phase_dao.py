@@ -20,8 +20,22 @@ class PhaseDao(Dao[Phase]):
         return 0
 
     def read(self, id_phase: int) -> Optional[Phase]:
-        ...
-        return None
+        """Renvoie le livre correspondant à l'entité id
+                  (ou None s'il n'a pu être trouvé)"""
+        phase: Optional[Phase]
+
+        with Dao.connection.cursor() as cursor:
+            sql = "SELECT * FROM phase WHERE pha_id=%s"
+            cursor.execute(sql, id_phase)
+            record = cursor.fetchone()
+        if record is not None:
+            phase = Phase(record['pha_id'],record["pha_type"],record["pha_date"],record["awa_id"])
+
+        else:
+            phase = None
+
+        return phase
+
 
     def update(self, phase: Phase) -> bool:
         ...

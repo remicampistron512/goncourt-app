@@ -8,4 +8,4 @@ class Phase:
     id_phase :int
     type: str
     date: datetime.date
-
+    awa_id: int
