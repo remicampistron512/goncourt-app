@@ -39,3 +39,8 @@ class Goncourt:
     def set_vote_for_book(id_jury_member: int, id_phase: int, id_book: int):
         vote_dao: VoteDao = VoteDao()
         vote_dao.set_votes_for_book(id_jury_member, id_phase, id_book)
+
+    @staticmethod
+    def get_phase_by_id(phase_id: int):
+        phase_dao: PhaseDao = PhaseDao()
+        return phase_dao.read(phase_id)
