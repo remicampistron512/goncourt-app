@@ -6,38 +6,38 @@ title Prix Goncourt 2025 - Diagramme de classes
 ' ======================
 
 class Author {
-  +id : int
+  +id_author : int
   +last_name : string
   +first_name : string
   +biography : string
 }
 
 class JuryMember {
-  +id : int
+  +id_jury_member : int
   +last_name : string
   +first_name : string
   +type : string
 }
 
 class Editor {
-  +id : int
+  +id_editor : int
   +name : string
 }
 
 class LiteraryAward {
-  +id : int
+  +id_literary_award : int
   +name : string
 }
 
 class AwardEdition {
-  +id : int
+  +id_award_edition : int
   +year : int
   +date : Date
   +location : string
 }
 
 class Book {
-  +id : int
+  +id_book : int
   +book_title : string
   +summary : string
   +publishing_date : Date
@@ -47,14 +47,14 @@ class Book {
 }
 
 class Character {
-  +id : int
+  +id_character : int
   +nickname : string
   +first_name : string
   +last_name : string
 }
 
 class Phase {
-  +id : int
+  +id_phase : int
   +type : string
   +date : Date
 }
@@ -64,7 +64,7 @@ class Participate {
 }
 
 class Vote {
-  +id : int
+  +id_vote : int
   +nb_votes : int
 }
 
