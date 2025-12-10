@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 from daos.book_dao import BookDao
+from daos.phase_dao import PhaseDao
 
 
 @dataclass
@@ -27,3 +28,9 @@ class Goncourt:
     def get_all_books_by_phase(phase_id: int):
         book_dao: BookDao = BookDao()
         return book_dao.list_by_phase(phase_id)
+
+    @staticmethod
+    def set_books_for_phase(phase_id: int, book_ids: list[int]):
+        phase_dao: PhaseDao = PhaseDao()
+        phase_dao.set_books_for_phase(phase_id,book_ids)
+
