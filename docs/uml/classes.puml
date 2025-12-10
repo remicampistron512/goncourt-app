@@ -1,0 +1,104 @@
+@startuml
+title Prix Goncourt 2025 - Diagramme de classes
+
+' ======================
+'        CLASSES
+' ======================
+
+class Author {
+  +id : int
+  +last_name : string
+  +first_name : string
+  +biography : string
+}
+
+class JuryMember {
+  +id : int
+  +last_name : string
+  +first_name : string
+  +type : string
+}
+
+class Editor {
+  +id : int
+  +name : string
+}
+
+class LiteraryAward {
+  +id : int
+  +name : string
+}
+
+class AwardEdition {
+  +id : int
+  +year : int
+  +date : Date
+  +location : string
+}
+
+class Book {
+  +id : int
+  +book_title : string
+  +summary : string
+  +publishing_date : Date
+  +nb_pages : int
+  +isbn : string
+  +editor_price : decimal
+}
+
+class Character {
+  +id : int
+  +nickname : string
+  +first_name : string
+  +last_name : string
+}
+
+class Phase {
+  +id : int
+  +type : string
+  +date : Date
+}
+
+class Participate {
+    +role :string
+}
+
+class Vote {
+  +id : int
+  +nb_votes : int
+}
+
+' ======================
+'    ASSOCIATIONS
+' ======================
+
+' Livre – Auteur : un auteur écrit plusieurs livres
+Author "1" -- "0..*" Book : writes
+
+' Livre – Editeur : un éditeur publie plusieurs livres
+Editor "1" -- "0..*" Book : publish
+
+' PrixLitteraire – EditionPrix : un prix a plusieurs éditions
+LiteraryAward "1" -- "0..*" AwardEdition : has
+
+' EditionPrix – Phase : une édition se compose de plusieurs phases
+AwardEdition "1" -- "1..*" Phase : occurs
+
+' EditionPrix – MembreJury : participation via Participe
+JuryMember "1" -- "0..*" Participate
+AwardEdition "1" -- "0..*" Participate
+
+' Phase – Livre : sélection des livres
+Phase "0..*" -- "0..*" Book
+
+' Vote - comptage des votes '
+JuryMember "1" -- "0..*" Vote
+Phase "1" -- "0..*" Vote
+Book "1" -- "0..*" Vote
+
+' Livre – Personnage : un livre a plusieurs personnages principaux
+Book "1" -- "0..*" Character
+
+
+
+@enduml
