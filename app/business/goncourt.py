@@ -22,3 +22,8 @@ class Goncourt:
     def get_all_books():
         book_dao: BookDao = BookDao()
         return book_dao.read_all()
+
+    @staticmethod
+    def get_all_books_by_phase(phase_id: int):
+        book_dao: BookDao = BookDao()
+        return book_dao.list_by_phase(phase_id)
