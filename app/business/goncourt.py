@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+from daos.book_dao import BookDao
+
 
 @dataclass
 class Goncourt:
@@ -16,3 +18,7 @@ class Goncourt:
 
     """
 
+    @staticmethod
+    def get_all_books():
+        book_dao: BookDao = BookDao()
+        return book_dao.read_all()
