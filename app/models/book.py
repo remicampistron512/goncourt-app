@@ -11,7 +11,7 @@ from typing import Optional
 
 @dataclass
 class Book:
-    """Adresse d'une personne (enseignant ou élève)."""
+    """Détail d'un livre."""
     id_book: Optional[int] = field(default=None, init=False)
     book_title: str
     summary: str
