@@ -59,20 +59,46 @@ def main() -> None:
             print("Choix invalide.")
 
 
-def define_selection(goncourt, phase_id):
+def define_selection(goncourt: Goncourt, phase_id: int) -> None:
     phase = goncourt.get_phase_by_id(phase_id)
-    nb_selected_books = 0
 
-    while nb_selected_books < phase.nb_books:
-        remaining_books = phase.nb_books - nb_selected_books
-        print(f"----- Sélectionnez un livre à ajouter à la sélection ({remaining_books} restants) -----")
-        books = goncourt.get_all_remaining_books_for_phase(phase_id)
-        for book in books:
+    while True:
+        # 1) combien de livres sont déjà dans cette phase ?
+        current_books = goncourt.get_all_books_by_phase(phase_id)
+        remaining_slots = phase.nb_books - len(current_books)
+
+        if remaining_slots <= 0:
+            print("\nLa sélection est complète.")
+            break
+
+        # 2) quels livres restent disponibles à ajouter ?
+        available_books = goncourt.get_all_remaining_books_for_phase(phase_id)
+        if not available_books:
+            print("\nIl n'y a plus de livres disponibles à ajouter.")
+            break
+
+        print(f"\n----- Sélectionnez un livre à ajouter à la sélection "
+              f"({remaining_slots} place(s) restante(s)) -----")
+
+        for book in available_books:
+            # suppose que Book.__str__ est déjà bien défini
             print(book)
+
         print("")
-        choice = input("Your choice: ").strip()
-        nb_selected_books += 1
-        goncourt.add_book_to_phase(phase_id, choice)
+        choice_str = input("Entrez l'id du livre (ou ENTER pour arrêter) : ").strip()
+        if choice_str == "":
+            # l'utilisateur veut arrêter avant que la sélection soit pleine
+            break
+
+        try:
+            choice_id = int(choice_str)
+        except ValueError:
+            print("Id invalide, veuillez saisir un nombre.")
+            continue
+
+        # 3) ajout du livre à la phase via le service métier
+        goncourt.add_book_to_phase(phase_id, choice_id)
+
 
 
 def show_phase(goncourt: Goncourt, phase_id) -> None:
