@@ -19,7 +19,7 @@ def main() -> None:
     book_id_list2 = [1,2,3,4]
     goncourt.set_books_for_phase(3,book_id_list2)"""
 
-    #goncourt.set_vote_for_book(2, 4, 2)
+    goncourt.set_vote_for_book(2, 4, 2)
     #show_phase(goncourt, 1)
 
     # @todo implémenter la gestion du 4eme tour avec les votes
@@ -39,11 +39,13 @@ def main() -> None:
         elif third_selection_completed:
             print("3. Montrer la troisième selection")
 
+        if third_selection_completed:
+            print("4. Attribuer les votes pour désigner le lauréat")
         print("0. Quit")
 
         choice = input("Votre choix: ").strip()
         if choice == "1":
-            show_all(goncourt)
+            show_phase(goncourt, 1)
         elif choice == "2" and second_selection_completed:
             show_phase(goncourt, 2)
         elif choice == "2" and not second_selection_completed:
@@ -52,6 +54,8 @@ def main() -> None:
             show_phase(goncourt, 3)
         elif choice == "3" and not third_selection_completed:
             define_selection(goncourt, 3)
+        elif choice == "4":
+            cast_votes(goncourt)
         elif choice == "0":
             print("Au revoir.")
             break
@@ -72,7 +76,7 @@ def define_selection(goncourt: Goncourt, phase_id: int) -> None:
             break
 
         # 2) quels livres restent disponibles à ajouter ?
-        available_books = goncourt.get_all_remaining_books_for_phase(phase_id)
+        available_books = goncourt.get_remaining_books_from_previous_phase(phase_id-1,phase_id)
         if not available_books:
             print("\nIl n'y a plus de livres disponibles à ajouter.")
             break
@@ -114,6 +118,7 @@ def show_all(goncourt: Goncourt) -> None:
     for book in books:
         print(book)
     print("")
+
 
 
 if __name__ == '__main__':

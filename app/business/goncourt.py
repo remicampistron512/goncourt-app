@@ -31,9 +31,9 @@ class Goncourt:
         return book_dao.list_by_phase(phase_id)
 
     @staticmethod
-    def get_all_remaining_books_for_phase(phase_id: int):
+    def get_remaining_books_from_previous_phase(previous_phase_id: int,current_phase_id:int):
         book_dao: BookDao = BookDao()
-        return book_dao.get_all_remaining_books_for_phase(phase_id)
+        return book_dao.get_remaining_books_from_previous_phase(previous_phase_id,current_phase_id)
 
     @staticmethod
     def set_books_for_phase(phase_id: int, book_ids: list[int]):

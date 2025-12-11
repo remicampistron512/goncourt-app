@@ -121,22 +121,29 @@ class BookDao(Dao[Book]):
         ...
         return True
 
-    def get_all_remaining_books_for_phase(self, phase_id: int) -> list[Book]:
+    def get_remaining_books_from_previous_phase(
+            self,
+            previous_phase_id: int,
+            current_phase_id: int,
+    ) -> list[Book]:
         """
-        Retourne les livres pas encore associés dans la table contains
+        Retourne les livres qui étaient sélectionnés à la phase précédente
+        mais qui ne sont pas encore associés à la phase courante.
         """
         with self.connection.cursor() as cursor:
             sql = """
-                SELECT *
-                FROM book
-                WHERE boo_id NOT IN (
-                    SELECT cont_fk_boo_id
-                    FROM contains
-                    WHERE cont_fk_pha_id = %s
-                )
-                ORDER BY boo_id
-            """
-            cursor.execute(sql, (phase_id,))
+                   SELECT *
+                   FROM book
+                   JOIN contains c_prev
+                     ON c_prev.cont_fk_boo_id = boo_id
+                    AND c_prev.cont_fk_pha_id = %s
+                   LEFT JOIN contains c_curr
+                     ON c_curr.cont_fk_boo_id = boo_id
+                    AND c_curr.cont_fk_pha_id = %s
+                   WHERE c_curr.cont_fk_boo_id IS NULL
+                   ORDER BY boo_id
+               """
+            cursor.execute(sql, (previous_phase_id, current_phase_id))
             records = cursor.fetchall()
 
         books: list[Book] = []
