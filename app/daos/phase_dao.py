@@ -29,7 +29,8 @@ class PhaseDao(Dao[Phase]):
             cursor.execute(sql, id_phase)
             record = cursor.fetchone()
         if record is not None:
-            phase = Phase(record['pha_id'], record["pha_type"], record["pha_date"], record["awa_id"])
+            phase = Phase(record['pha_id'], record["pha_type"], record["pha_date"], record["pha_nb_books"],
+                          record["awa_id"])
 
         else:
             phase = None
@@ -74,6 +75,20 @@ class PhaseDao(Dao[Phase]):
             """
             for book_id in book_ids:
                 cursor.execute(sql, (phase_id, book_id))
+
+        # valider les modifications
+        self.connection.commit()
+
+    def add_book_to_phase(self, phase_id, book_id):
+        """
+                Ajoute un livre à une selection donnée.
+        """
+        with self.connection.cursor() as cursor:
+            sql = """
+                        INSERT INTO contains (cont_fk_pha_id, cont_fk_boo_id)
+                        VALUES (%s, %s)
+                    """
+            cursor.execute(sql, (phase_id, book_id))
 
         # valider les modifications
         self.connection.commit()

@@ -31,9 +31,19 @@ class Goncourt:
         return book_dao.list_by_phase(phase_id)
 
     @staticmethod
+    def get_all_remaining_books_for_phase(phase_id: int):
+        book_dao: BookDao = BookDao()
+        return book_dao.get_all_remaining_books_for_phase(phase_id)
+
+    @staticmethod
     def set_books_for_phase(phase_id: int, book_ids: list[int]):
         phase_dao: PhaseDao = PhaseDao()
         phase_dao.set_books_for_phase(phase_id, book_ids)
+
+    @staticmethod
+    def add_book_to_phase(phase_id: int, book_id):
+        phase_dao: PhaseDao = PhaseDao()
+        phase_dao.add_book_to_phase(phase_id, book_id)
 
     @staticmethod
     def set_vote_for_book(id_jury_member: int, id_phase: int, id_book: int):
@@ -49,3 +59,5 @@ class Goncourt:
     def is_selection_not_empty(phase_id: int):
         phase_dao: PhaseDao = PhaseDao()
         return phase_dao.is_selection_not_empty(phase_id)
+
+

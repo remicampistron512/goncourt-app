@@ -120,3 +120,41 @@ class BookDao(Dao[Book]):
         """
         ...
         return True
+
+    def get_all_remaining_books_for_phase(self, phase_id: int) -> list[Book]:
+        """
+        Retourne les livres pas encore associés dans la table contains
+        """
+        with self.connection.cursor() as cursor:
+            sql = """
+                SELECT *
+                FROM book
+                WHERE boo_id NOT IN (
+                    SELECT cont_fk_boo_id
+                    FROM contains
+                    WHERE cont_fk_pha_id = %s
+                )
+                ORDER BY boo_id
+            """
+            cursor.execute(sql, (phase_id,))
+            records = cursor.fetchall()
+
+        books: list[Book] = []
+
+        for record in records:
+            price = record["boo_editor_price"]
+            if isinstance(price, str):
+                price = Decimal(price)
+
+            book = Book(
+                book_title=record["boo_title"],
+                summary=record["boo_summary"],
+                publishing_date=record["boo_publishing_date"],
+                nb_pages=record["boo_nb_pages"],
+                isbn=record["boo_isbn"],
+                editor_price=price,
+            )
+            book.id_book = record["boo_id"]
+            books.append(book)
+
+        return books

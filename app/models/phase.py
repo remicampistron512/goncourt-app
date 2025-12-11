@@ -5,7 +5,8 @@ from dataclasses import dataclass
 
 @dataclass
 class Phase:
-    id_phase :int
+    id_phase: int
     type: str
     date: datetime.date
+    nb_books: int
     awa_id: int

@@ -20,7 +20,7 @@ def main() -> None:
     goncourt.set_books_for_phase(3,book_id_list2)"""
 
     goncourt.set_vote_for_book(2, 4, 2)
-    show_phase(goncourt,1)
+    show_phase(goncourt, 1)
     second_selection_exists = goncourt.is_selection_not_empty(2)
     third_selection_exists = goncourt.is_selection_not_empty(3)
 
@@ -43,25 +43,36 @@ def main() -> None:
         choice = input("Your choice: ").strip()
         # @todo implementer selection exists et define selection
         if choice == "1":
-            show_phase(goncourt,1)
+            show_phase(goncourt, 1)
         elif choice == "2" and second_selection_exists:
             show_phase(goncourt, 2)
         elif choice == "2" and not second_selection_exists:
-            pass
-             #define_selection(goncourt,2)
+            define_selection(goncourt, 2)
         elif choice == "3" and third_selection_exists:
             show_phase(goncourt, 3)
         elif choice == "3" and not third_selection_exists:
-            pass
-            # define_selection(goncourt,3)
+            define_selection(goncourt, 3)
         elif choice == "0":
-            print("Goodbye.")
+            print("Au revoir.")
             break
         else:
-            print("Invalid choice.")
+            print("Choix invalide.")
 
 
+def define_selection(goncourt, phase_id):
+    phase = goncourt.get_phase_by_id(phase_id)
+    nb_selected_books = 0
 
+    while nb_selected_books < phase.nb_books:
+        remaining_books = phase.nb_books - nb_selected_books
+        print(f"----- Sélectionnez un livre à ajouter à la sélection ({remaining_books} restants) -----")
+        books = goncourt.get_all_remaining_books_for_phase(phase_id)
+        for book in books:
+            print(book)
+        print("")
+        choice = input("Your choice: ").strip()
+        nb_selected_books += 1
+        goncourt.add_book_to_phase(phase_id, choice)
 
 
 def show_phase(goncourt: Goncourt, phase_id) -> None:
