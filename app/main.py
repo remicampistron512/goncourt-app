@@ -51,19 +51,28 @@ def main() -> None:
 
 
 def define_selection(goncourt: Goncourt, phase_id: int) -> None:
+    """
+    Définit une sélection de livres pour une phase donnée
+    :param goncourt:
+    :param phase_id: id de la phase de sélection de livres
+    :return:
+    """
+
+    # Récupère les informations de la phase de sélection
     phase = goncourt.get_phase_by_id(phase_id)
 
     while True:
-        # 1) combien de livres sont déjà dans cette phase ?
+        # combien de livres sont déjà dans cette phase ?
         current_books = goncourt.get_all_books_by_phase(phase_id)
+        # nombre de livres restants à ajouter
         remaining_slots = phase.nb_books - len(current_books)
-
+        # il ne reste plus places pour ajouter un livre, la sélection est complète
         if remaining_slots <= 0:
             print("\nLa sélection est complète.")
             break
 
-        # 2) quels livres restent disponibles à ajouter ?
-        available_books = goncourt.get_remaining_books_from_previous_phase(phase_id-1,phase_id)
+        # quels livres restent disponibles à ajouter ?
+        available_books = goncourt.get_remaining_books_from_previous_phase(phase_id - 1, phase_id)
         if not available_books:
             print("\nIl n'y a plus de livres disponibles à ajouter.")
             break
@@ -72,7 +81,6 @@ def define_selection(goncourt: Goncourt, phase_id: int) -> None:
               f"({remaining_slots} place(s) restante(s)) -----")
 
         for book in available_books:
-            # suppose que Book.__str__ est déjà bien défini
             print(book)
 
         print("")
@@ -87,11 +95,17 @@ def define_selection(goncourt: Goncourt, phase_id: int) -> None:
             print("Id invalide, veuillez saisir un nombre.")
             continue
 
-        # 3) ajout du livre à la phase via le service métier
+        # ajout du livre à la phase de sélection
         goncourt.add_book_to_phase(phase_id, choice_id)
 
 
 def show_phase(goncourt: Goncourt, phase_id) -> None:
+    """
+    Affiche les livres d'une phase de sélection de donnée
+    :param goncourt:
+    :param phase_id: id de la phase de sélection de livres
+    :return:
+    """
     phase = goncourt.get_phase_by_id(phase_id)
     books = goncourt.get_all_books_by_phase(phase_id)
     print(f"\n--- {phase.type} ---")
@@ -100,18 +114,27 @@ def show_phase(goncourt: Goncourt, phase_id) -> None:
 
 
 def show_all(goncourt: Goncourt) -> None:
-    print("\n--- Première sélection ---")
+    """
+    Affiche tous les livres (utilisé pour les tests)
+    :param goncourt:
+    :return:
+    """
+    print("\n--- Voici tous les livres ---")
     books = goncourt.get_all_books()
     for book in books:
         print(book)
     print("")
 
 
-def cast_votes(goncourt):
+def cast_votes(goncourt) -> None:
+    """
+    Attribue des votes à chaque livre, livre après livre
+    :param goncourt:
+    :return:
+    """
     books = goncourt.get_all_books_by_phase(3)
 
     print("\n=== Saisie des votes ===")
-
 
     votes_by_book: dict[int, int] = {}
 
