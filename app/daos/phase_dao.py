@@ -29,13 +29,12 @@ class PhaseDao(Dao[Phase]):
             cursor.execute(sql, id_phase)
             record = cursor.fetchone()
         if record is not None:
-            phase = Phase(record['pha_id'],record["pha_type"],record["pha_date"],record["awa_id"])
+            phase = Phase(record['pha_id'], record["pha_type"], record["pha_date"], record["awa_id"])
 
         else:
             phase = None
 
         return phase
-
 
     def update(self, phase: Phase) -> bool:
         ...
@@ -43,6 +42,19 @@ class PhaseDao(Dao[Phase]):
 
     def delete(self, phase: Phase) -> bool:
         ...
+
+    def is_selection_not_empty(self, phase_id: int) -> bool:
+        with self.connection.cursor() as cursor:
+            sql = """
+                SELECT 1
+                FROM contains
+                WHERE cont_fk_pha_id = %s
+                LIMIT 1
+            """
+            cursor.execute(sql, (phase_id,))
+            row = cursor.fetchone()
+
+        return row is not None
 
     def set_books_for_phase(self, phase_id: int, book_ids: list[int]) -> None:
         """
