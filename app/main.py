@@ -14,21 +14,7 @@ def main() -> None:
         second_selection_completed = goncourt.is_selection_complete(2)
         third_selection_completed = goncourt.is_selection_complete(3)
 
-        print("\n=== Goncourt App ===")
-        print("1. Montrer la première selection")
-        if not second_selection_completed:
-            print("2. Définir la seconde sélection")
-        else:
-            print("2. Montrer la deuxième selection")
-
-        if not third_selection_completed and second_selection_completed:
-            print("3. Définir la troisième sélection")
-        elif third_selection_completed:
-            print("3. Montrer la troisième selection")
-
-        if third_selection_completed:
-            print("4. Attribuer les votes pour désigner le lauréat")
-        print("0. Quitter")
+        print_menu(second_selection_completed, third_selection_completed)
 
         choice = input("Votre choix: ").strip()
         if choice == "1":
@@ -48,6 +34,34 @@ def main() -> None:
             break
         else:
             print("Choix invalide.")
+
+
+def print_menu(second_selection_completed: bool, third_selection_completed: bool) -> None:
+    """
+    Affiche le menu principal en fonction de l'état des sélections.
+    :param second_selection_completed:
+    :param third_selection_completed:
+    :return:
+    """
+    print("\n=== Goncourt App ===")
+    print("1. Montrer la première selection")
+
+    # Option 2 : deuxième sélection
+    if not second_selection_completed:
+        print("2. Définir la seconde sélection")
+    else:
+        print("2. Montrer la deuxième selection")
+
+    # Option 3 : troisième sélection
+    if not third_selection_completed and second_selection_completed:
+        print("3. Définir la troisième sélection")
+    elif third_selection_completed:
+        print("3. Montrer la troisième selection")
+
+    # Option 4 : votes finaux
+    if third_selection_completed:
+        print("4. Attribuer les votes pour désigner le lauréat")
+    print("0. Quitter")
 
 
 def define_selection(goncourt: Goncourt, phase_id: int) -> None:
