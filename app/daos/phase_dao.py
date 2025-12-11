@@ -92,3 +92,19 @@ class PhaseDao(Dao[Phase]):
 
         # valider les modifications
         self.connection.commit()
+
+    def is_selection_complete(self, phase_id):
+        phase = self.read(phase_id)
+
+        with self.connection.cursor() as cursor:
+            sql = """
+                SELECT COUNT(*) AS nb
+                FROM contains
+                WHERE cont_fk_pha_id = %s
+            """
+            cursor.execute(sql, (phase_id,))
+            row = cursor.fetchone()
+
+        current_count = row["nb"] if row is not None else 0
+
+        return current_count >= phase.nb_books

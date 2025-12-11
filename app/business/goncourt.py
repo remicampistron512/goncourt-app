@@ -60,4 +60,9 @@ class Goncourt:
         phase_dao: PhaseDao = PhaseDao()
         return phase_dao.is_selection_not_empty(phase_id)
 
+    @staticmethod
+    def is_selection_complete(phase_id: int):
+        phase_dao: PhaseDao = PhaseDao()
+        return phase_dao.is_selection_complete(phase_id)
+
 
