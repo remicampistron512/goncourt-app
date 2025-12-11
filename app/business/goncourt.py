@@ -31,9 +31,9 @@ class Goncourt:
         return book_dao.list_by_phase(phase_id)
 
     @staticmethod
-    def get_remaining_books_from_previous_phase(previous_phase_id: int,current_phase_id:int):
+    def get_remaining_books_from_previous_phase(previous_phase_id: int, current_phase_id: int):
         book_dao: BookDao = BookDao()
-        return book_dao.get_remaining_books_from_previous_phase(previous_phase_id,current_phase_id)
+        return book_dao.get_remaining_books_from_previous_phase(previous_phase_id, current_phase_id)
 
     @staticmethod
     def set_books_for_phase(phase_id: int, book_ids: list[int]):
@@ -65,4 +65,11 @@ class Goncourt:
         phase_dao: PhaseDao = PhaseDao()
         return phase_dao.is_selection_complete(phase_id)
 
-
+    @staticmethod
+    def record_final_votes(votes_by_book: dict[int, int]) -> None:
+        """
+        Enregistre les votes agrégés par livre pour une phase donnée.
+        """
+        vote_dao: VoteDao = VoteDao()
+        for book_id, nb_votes in votes_by_book.items():
+            vote_dao.set_votes_for_book(nb_votes, 7, 4, book_id)

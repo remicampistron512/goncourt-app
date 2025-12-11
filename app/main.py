@@ -10,19 +10,6 @@ def main() -> None:
 
     goncourt: Goncourt = Goncourt()
 
-    #show_all(goncourt)
-    """print("----- AJOUT DE LIVRES A LA PHASE 2 -----")
-    book_id_list = [1,2,3,4,5,6,7,8]
-    goncourt.set_books_for_phase(2,book_id_list)
-
-    print("----- AJOUT DE LIVRES A LA PHASE 3 -----")
-    book_id_list2 = [1,2,3,4]
-    goncourt.set_books_for_phase(3,book_id_list2)"""
-
-    goncourt.set_vote_for_book(2, 4, 2)
-    #show_phase(goncourt, 1)
-
-    # @todo implémenter la gestion du 4eme tour avec les votes
     while True:
         second_selection_completed = goncourt.is_selection_complete(2)
         third_selection_completed = goncourt.is_selection_complete(3)
@@ -41,7 +28,7 @@ def main() -> None:
 
         if third_selection_completed:
             print("4. Attribuer les votes pour désigner le lauréat")
-        print("0. Quit")
+        print("0. Quitter")
 
         choice = input("Votre choix: ").strip()
         if choice == "1":
@@ -119,6 +106,40 @@ def show_all(goncourt: Goncourt) -> None:
         print(book)
     print("")
 
+
+def cast_votes(goncourt):
+    books = goncourt.get_all_books_by_phase(3)
+
+    print("\n=== Saisie des votes ===")
+
+
+    votes_by_book: dict[int, int] = {}
+
+    for book in books:
+        while True:
+            print(f"Livre #{book.id_book} : {book.book_title}")
+            entry = input("Nombre de voix (entier >= 0, ENTER pour 0) : ").strip()
+
+            if entry == "":
+                nb_votes = 0
+                break
+
+            try:
+                nb_votes = int(entry)
+                if nb_votes < 0:
+                    print("Le nombre de voix doit être >= 0.")
+                    continue
+                break
+            except ValueError:
+                print("Valeur invalide, veuillez saisir un entier.")
+                continue
+
+        votes_by_book[book.id_book] = nb_votes
+        print("")
+
+    goncourt.record_final_votes(votes_by_book)
+
+    print("Les votes ont été enregistrés.")
 
 
 if __name__ == '__main__':

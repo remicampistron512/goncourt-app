@@ -30,9 +30,9 @@ class VoteDao(Dao[Vote]):
     def delete(self, vote: Vote) -> bool:
         ...
 
-    def set_votes_for_book(self, id_jury_member: int, id_phase: int,id_book: int ) -> None:
+    def set_votes_for_book(self, nb_votes: int, id_jury_member: int, id_phase: int, id_book: int) -> None:
         # ici, on assigne un seul vote par défaut
-        nb_votes = 1
+
         """
                 Assigne un nombre de votes à un livre pour un membre et une phase.
                 Si un vote existe déjà pour (membre, phase, livre), il est mis à jour.
