@@ -162,3 +162,8 @@ class Goncourt:
 
         # Reinitialise les votes
         vote_dao.delete_by_phase(4)
+
+    @staticmethod
+    def is_book_in_selection(phase_id, book_id):
+        phase_dao: PhaseDao = PhaseDao()
+        return phase_dao.is_book_in_selection(phase_id,book_id)

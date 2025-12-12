@@ -89,7 +89,7 @@ def main() -> None:
 
 
 def print_dev_menu():
-    print("D. Réinitialiser l'application (vide les 2eme et 3ème selections, et les votes")
+    print("D. Réinitialiser l'application (vide les 2ème et 3ème selections, et les votes)")
 
 
 def print_menu(second_selection_completed: bool, third_selection_completed: bool) -> None:
@@ -157,7 +157,6 @@ def define_selection(goncourt: Goncourt, phase_id: int) -> None:
         if choice_str == "":
             # l'utilisateur veut arrêter avant que la sélection soit pleine
             break
-
         try:
             choice_id = int(choice_str)
         except ValueError:
@@ -165,7 +164,10 @@ def define_selection(goncourt: Goncourt, phase_id: int) -> None:
             continue
 
         # ajout du livre à la phase de sélection
-        goncourt.add_book_to_phase(phase_id, choice_id)
+        if not goncourt.is_book_in_selection(phase_id,choice_id):
+            goncourt.add_book_to_phase(phase_id, choice_id)
+        else:
+            print("Ce livre a déjà été ajouté à la sélection veuillez en choisir un autre")
 
 
 def show_phase(goncourt: Goncourt, phase_id) -> None:

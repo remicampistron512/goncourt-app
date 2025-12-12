@@ -118,3 +118,22 @@ class PhaseDao(Dao[Phase]):
             cursor.execute(sql, (phase_id,))
 
         self.connection.commit()
+
+    def is_book_in_selection(self, phase_id,book_id):
+        """
+        Vérifie si un livre existe déja dans une sélection donnée
+        :param book_id:
+        :param phase_id:
+        :return:
+        """
+        with self.connection.cursor() as cursor:
+            sql = """
+                SELECT 1
+                FROM contains
+                WHERE    cont_fk_pha_id = %s AND cont_fk_boo_id = %s
+                LIMIT 1
+            """
+            cursor.execute(sql, (phase_id,book_id,))
+            row = cursor.fetchone()
+
+        return row is not None
