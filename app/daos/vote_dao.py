@@ -7,6 +7,7 @@ Classe Dao[Vote]
 from dataclasses import dataclass
 from typing import Optional, Tuple
 
+import pymysql  # type: ignore
 from daos.dao import Dao
 from models.vote import Vote
 
@@ -73,7 +74,7 @@ class VoteDao(Dao[Vote]):
 
         params = (nb_votes, id_jury_member, id_phase, id_book)
 
-        with self.connection.cursor() as cursor:
+        with Dao.connection.cursor(pymysql.cursors.DictCursor) as cursor:
             cursor.execute(sql, params)
 
         self.connection.commit()
@@ -82,7 +83,7 @@ class VoteDao(Dao[Vote]):
         """
                 Renvoie le gagnant du concours
                 """
-        with self.connection.cursor() as cursor:
+        with Dao.connection.cursor(pymysql.cursors.DictCursor) as cursor:
             sql = """
                        SELECT
                            vot_fk_boo_id   AS book_id,
@@ -107,7 +108,7 @@ class VoteDao(Dao[Vote]):
         """
         Supprime les votes pour une phase donnée
         """
-        with self.connection.cursor() as cursor:
+        with self.Dao.connection.cursor(pymysql.cursors.DictCursor) as cursor:
             sql = "DELETE FROM vote WHERE vot_fk_pha_id = %s"
             cursor.execute(sql, (phase_id,))
 

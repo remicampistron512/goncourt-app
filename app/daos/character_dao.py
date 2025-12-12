@@ -4,6 +4,7 @@
 DAO pour les personnages (Character).
 """
 
+import pymysql  # type: ignore
 from dataclasses import dataclass
 from typing import Optional
 
@@ -25,7 +26,7 @@ class CharacterDao(Dao[Character]):
     def read(self, id_character: int) -> Optional[Character]:
         """Renvoie le personnage correspondant à l'entité id
                   (ou None s'il n'a pu être trouvé)"""
-        with self.connection.cursor() as cursor:
+        with Dao.connection.cursor(pymysql.cursors.DictCursor) as cursor:
             sql = """
                 SELECT cha_id,
                        char_nickname,

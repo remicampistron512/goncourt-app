@@ -7,6 +7,7 @@ Classe Dao[Editor]
 from dataclasses import dataclass
 from typing import Optional
 
+import pymysql  # type: ignore
 from daos.dao import Dao
 from models.editor import Editor
 
@@ -28,7 +29,7 @@ class EditorDao(Dao[Editor]):
         Récupère un auteur par son id.
 
         """
-        with self.connection.cursor() as cursor:
+        with Dao.connection.cursor(pymysql.cursors.DictCursor) as cursor:
             sql = """
                 SELECT editr_id,
                        editr_name

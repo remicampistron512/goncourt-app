@@ -4,6 +4,7 @@
 Classe Dao[Phase]
 """
 
+import pymysql  # type: ignore
 from dataclasses import dataclass
 from typing import Optional
 
@@ -28,7 +29,7 @@ class PhaseDao(Dao[Phase]):
                   (ou None s'il n'a pu être trouvé)"""
         phase: Optional[Phase]
 
-        with Dao.connection.cursor() as cursor:
+        with Dao.connection.cursor(pymysql.cursors.DictCursor) as cursor:
             sql = "SELECT * FROM phase WHERE pha_id=%s"
             cursor.execute(sql, id_phase)
             record = cursor.fetchone()
@@ -59,13 +60,14 @@ class PhaseDao(Dao[Phase]):
         ...
         return True
 
-    def is_selection_not_empty(self, phase_id: int) -> bool:
+    @staticmethod
+    def is_selection_not_empty(phase_id: int) -> bool:
         """
         Détermine si une phase est vide
         :param phase_id:
         :return:
         """
-        with self.connection.cursor() as cursor:
+        with Dao.connection.cursor(pymysql.cursors.DictCursor) as cursor:
             sql = """
                 SELECT 1
                 FROM contains
@@ -81,7 +83,7 @@ class PhaseDao(Dao[Phase]):
         """
         Remplace tous les livres associés à une phase par la liste book_ids.
         """
-        with self.connection.cursor() as cursor:
+        with Dao.connection.cursor(pymysql.cursors.DictCursor) as cursor:
             # 1) supprimer les livres actuellement associés à cette phase
             cursor.execute(
                 "DELETE FROM contains WHERE cont_fk_pha_id = %s",
@@ -103,7 +105,7 @@ class PhaseDao(Dao[Phase]):
         """
                 Ajoute un livre à une selection donnée.
         """
-        with self.connection.cursor() as cursor:
+        with Dao.connection.cursor(pymysql.cursors.DictCursor) as cursor:
             sql = """
                         INSERT INTO contains (cont_fk_pha_id, cont_fk_boo_id)
                         VALUES (%s, %s)
@@ -116,7 +118,7 @@ class PhaseDao(Dao[Phase]):
     def is_selection_complete(self, phase_id):
         phase = self.read(phase_id)
 
-        with self.connection.cursor() as cursor:
+        with Dao.connection.cursor(pymysql.cursors.DictCursor) as cursor:
             sql = """
                 SELECT COUNT(*) AS nb
                 FROM contains
@@ -131,30 +133,31 @@ class PhaseDao(Dao[Phase]):
 
     def clear_selection_for_phase(self, phase_id: int) -> None:
         """
-        Enleve toutes les selections de livres pour une phase donnée
+        Enlève toutes les selections de livres pour une phase donnée
 
         """
-        with self.connection.cursor() as cursor:
+        with Dao.connection.cursor(pymysql.cursors.DictCursor) as cursor:
             sql = "DELETE FROM contains WHERE cont_fk_pha_id = %s"
             cursor.execute(sql, (phase_id,))
 
         self.connection.commit()
 
-    def is_book_in_selection(self, phase_id,book_id):
+    @staticmethod
+    def is_book_in_selection(phase_id, book_id):
         """
         Vérifie si un livre existe déja dans une sélection donnée
         :param book_id:
         :param phase_id:
         :return:
         """
-        with self.connection.cursor() as cursor:
+        with Dao.connection.cursor(pymysql.cursors.DictCursor) as cursor:
             sql = """
                 SELECT 1
                 FROM contains
                 WHERE    cont_fk_pha_id = %s AND cont_fk_boo_id = %s
                 LIMIT 1
             """
-            cursor.execute(sql, (phase_id,book_id,))
+            cursor.execute(sql, (phase_id, book_id,))
             row = cursor.fetchone()
 
         return row is not None

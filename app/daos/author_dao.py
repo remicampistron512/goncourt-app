@@ -4,6 +4,7 @@
 Classe Dao[Author].
 """
 
+import pymysql  # type: ignore
 from dataclasses import dataclass
 from typing import Optional
 
@@ -28,7 +29,7 @@ class AuthorDao(Dao[Author]):
 
 
         """
-        with self.connection.cursor() as cursor:
+        with Dao.connection.cursor(pymysql.cursors.DictCursor) as cursor:
             sql = """
                 SELECT aut_id,
                        aut_last_name,

@@ -5,6 +5,8 @@ Classe Dao[Book]
 """
 from decimal import Decimal
 
+import pymysql  # type: ignore
+
 from models.book import Book
 from models.author import Author
 from models.editor import Editor
@@ -30,12 +32,13 @@ class BookDao(Dao[Book]):
            (ou None s'il n'a pu être trouvé)"""
         book: Optional[Book]
 
-        with Dao.connection.cursor() as cursor:
+        with Dao.connection.cursor(pymysql.cursors.DictCursor) as cursor:
             sql = "SELECT * FROM  book WHERE boo_id=%s"
             cursor.execute(sql, id_book)
             record = cursor.fetchone()
         if record is not None:
-            book = Book(record['boo_title'], record['boo_summary'], record['boo_publishing_date'], record['boo_nb_pages'],record['boo_isbn'],record['boo_editor_price'])
+            book = Book(record['boo_title'], record['boo_summary'], record['boo_publishing_date'],
+                        record['boo_nb_pages'], record['boo_isbn'], record['boo_editor_price'])
             book.id_book = record['boo_id']
         else:
             book = None
@@ -47,7 +50,7 @@ class BookDao(Dao[Book]):
         Renvoie tous les livres
         :return:
         """
-        with Dao.connection.cursor() as cursor:
+        with Dao.connection.cursor(pymysql.cursors.DictCursor) as cursor:
             sql = "SELECT * FROM book"
             cursor.execute(sql)
             records = cursor.fetchall()
@@ -78,10 +81,10 @@ class BookDao(Dao[Book]):
              Renvoie tous les livres d'une phase
              :return:
              """
-        with Dao.connection.cursor() as cursor:
+        with Dao.connection.cursor(pymysql.cursors.DictCursor) as cursor:
             sql = "SELECT * FROM book JOIN contains ON cont_fk_boo_id = boo_id WHERE cont_fk_pha_id = %s"
 
-            cursor.execute(sql,phase_id)
+            cursor.execute(sql, phase_id)
             records = cursor.fetchall()
 
         books: list[Book] = []
@@ -104,7 +107,6 @@ class BookDao(Dao[Book]):
             books.append(book)
 
         return books
-
 
     def update(self, book: Book) -> bool:
         """Met à jour en BD l'entité Book correspondant à Book, pour y correspondre
@@ -133,7 +135,7 @@ class BookDao(Dao[Book]):
         Retourne les livres qui étaient sélectionnés à la phase précédente,
         mais qui ne sont pas encore associés à la phase courante.
         """
-        with self.connection.cursor() as cursor:
+        with Dao.connection.cursor(pymysql.cursors.DictCursor) as cursor:
             sql = """
                    SELECT *
                    FROM book
@@ -169,9 +171,8 @@ class BookDao(Dao[Book]):
 
         return books
 
-
     def read_full(
-        self, book_id: int
+            self, book_id: int
     ) -> Optional[tuple[Book, Author, Editor, list[Character]]]:
         """
         Retourne une vue complète d'un livre accompagné de son auteur, personnages et éditeur
@@ -181,7 +182,7 @@ class BookDao(Dao[Book]):
         """
 
         # Livre, auteur, éditeur
-        with self.connection.cursor() as cursor:
+        with Dao.connection.cursor(pymysql.cursors.DictCursor) as cursor:
             sql = """
                 SELECT
                     b.boo_id,
@@ -238,7 +239,7 @@ class BookDao(Dao[Book]):
         editor.id_editor = record["editr_id"]
 
         # Personnages
-        with self.connection.cursor() as cursor:
+        with Dao.connection.cursor(pymysql.cursors.DictCursor) as cursor:
             sql_chars = """
                 SELECT cha_id,
                        char_nickname,
