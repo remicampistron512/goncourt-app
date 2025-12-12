@@ -1,62 +1,26 @@
 from business.goncourt import Goncourt
 
 
-def ask_to_view_book_details(goncourt):
-    while True:
-        print("")
-        choice_str = input("Entrez l'id du livre pour voir les détails (ou ENTER pour arrêter) : ").strip()
-        if choice_str == "":
-            # l'utilisateur veut arrêter avant que la sélection soit pleine
-            break
-
-        try:
-            choice_id = int(choice_str)
-        except ValueError:
-            print("Id invalide, veuillez saisir un nombre.")
-            continue
-
-        book_details_full = goncourt.get_book_full_details(choice_id)
-
-        if book_details_full is not None:
-            book, author, editor, characters = book_details_full
-            print(book.to_detailed_string())
-            print(author)
-            print(editor)
-            for c in characters:
-                print(" -", c)
-
-
-def show_award_winner(goncourt: Goncourt) -> None:
-    result = goncourt.get_award_winner()
-    if result is None:
-        print("Aucun vote enregistré pour cette phase.")
-        return
-
-    book, total_votes = result
-    print("\n=== Lauréat ===")
-    print(f"{book.book_title} ({book.isbn}) – {total_votes} voix")
-
-
-def main() -> None:
+def main(dev: bool = False) -> None:
     """Programme principal."""
     print("""\
     --------------------------
     Bienvenue dans l'application Goncourt
     --------------------------""")
-    dev = True
+
     goncourt: Goncourt = Goncourt()
-    show_award_winner(goncourt)
 
     while True:
         second_selection_completed = goncourt.is_selection_complete(2)
         third_selection_completed = goncourt.is_selection_complete(3)
-
+        show_award_winner(goncourt)
         print_menu(second_selection_completed, third_selection_completed)
 
         if dev:
             print_dev_menu()
 
         choice = input("Votre choix: ").strip()
+
         if choice == "1":
             show_phase(goncourt, 1)
             ask_to_view_book_details(goncourt)
@@ -88,7 +52,43 @@ def main() -> None:
             print("Choix invalide.")
 
 
-def print_dev_menu():
+def ask_to_view_book_details(goncourt):
+    while True:
+        print("")
+        choice_str = input("Entrez l'id du livre pour voir les détails (ou ENTER pour arrêter) : ").strip()
+        if choice_str == "":
+            # l'utilisateur veut arrêter avant que la sélection soit pleine
+            break
+
+        try:
+            choice_id = int(choice_str)
+        except ValueError:
+            print("Id invalide, veuillez saisir un nombre.")
+            continue
+
+        book_details_full = goncourt.get_book_full_details(choice_id)
+
+        if book_details_full is not None:
+            book, author, editor, characters = book_details_full
+            print(book.to_detailed_string())
+            print(author)
+            print(editor)
+            for c in characters:
+                print(" -", c)
+
+
+def show_award_winner(goncourt: Goncourt) -> None:
+    result = goncourt.get_award_winner()
+    if result is None:
+        print("Aucun vote enregistré désignant le lauréat.")
+        return
+
+    book, total_votes = result
+    print("\n=== Lauréat ===")
+    print(f"{book.book_title} ({book.isbn}) – {total_votes} voix")
+
+
+def print_dev_menu() -> None:
     print("D. Réinitialiser l'application (vide les 2ème et 3ème selections, et les votes)")
 
 
@@ -117,6 +117,13 @@ def print_menu(second_selection_completed: bool, third_selection_completed: bool
     if third_selection_completed:
         print("4. Attribuer les votes pour désigner le lauréat")
     print("0. Quitter")
+
+
+def is_in_available_books(choice_id, available_books):
+    for book in available_books:
+        if choice_id != book.id_book:
+            return False
+    return True
 
 
 def define_selection(goncourt: Goncourt, phase_id: int) -> None:
@@ -164,10 +171,11 @@ def define_selection(goncourt: Goncourt, phase_id: int) -> None:
             continue
 
         # ajout du livre à la phase de sélection
-        if not goncourt.is_book_in_selection(phase_id,choice_id):
+        if not goncourt.is_book_in_selection(phase_id, choice_id) and is_in_available_books(choice_id,available_books):
             goncourt.add_book_to_phase(phase_id, choice_id)
         else:
-            print("Ce livre a déjà été ajouté à la sélection veuillez en choisir un autre")
+            print("Ce livre a déjà été ajouté à la sélection ou n'est pas disponible pour cette phase"
+                  " veuillez en choisir un autre")
 
 
 def show_phase(goncourt: Goncourt, phase_id) -> None:
@@ -237,4 +245,4 @@ def cast_votes(goncourt) -> None:
 
 
 if __name__ == '__main__':
-    main()
+    main(True)
