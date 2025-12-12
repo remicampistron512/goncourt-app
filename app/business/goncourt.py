@@ -19,6 +19,7 @@ class Goncourt:
         – Gestion du dernier tour de scrutin
 
     """
+
     @staticmethod
     def get_book_full_details(book_id):
         book_dao: BookDao = BookDao()
@@ -130,3 +131,19 @@ class Goncourt:
         vote_dao: VoteDao = VoteDao()
         for book_id, nb_votes in votes_by_book.items():
             vote_dao.set_votes_for_book(nb_votes, 7, 4, book_id)
+
+    @staticmethod
+    def get_award_winner():
+        """
+        Renvoie le gagnant du concours
+        """
+        vote_dao: VoteDao = VoteDao()
+        result = vote_dao.get_award_winner()
+        if result is None:
+            return None
+
+        book_id, total_votes = result
+
+        book_dao: BookDao = BookDao()
+        book = book_dao.read(book_id)
+        return book, total_votes

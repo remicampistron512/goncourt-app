@@ -57,3 +57,28 @@ class VoteDao(Dao[Vote]):
             cursor.execute(sql, params)
 
         self.connection.commit()
+
+    def get_award_winner(self, ):
+        """
+                Renvoie le gagnant du concours
+                """
+        with self.connection.cursor() as cursor:
+            sql = """
+                       SELECT
+                           vot_fk_boo_id   AS book_id,
+                           SUM(vot_nb_votes) AS total_votes
+                       FROM vote
+                       WHERE vot_fk_pha_id = 4
+                       GROUP BY vot_fk_boo_id
+                       ORDER BY total_votes DESC
+                       LIMIT 1
+                   """
+            cursor.execute(sql)
+            record = cursor.fetchone()
+
+        if record is None:
+            return None
+
+        book_id: int = record["book_id"]
+        total_votes: int = record["total_votes"]
+        return book_id, total_votes

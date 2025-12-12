@@ -26,6 +26,17 @@ def ask_to_view_book_details(goncourt):
                 print(" -", c)
 
 
+def show_award_winner(goncourt: Goncourt) -> None:
+    result = goncourt.get_award_winner()
+    if result is None:
+        print("Aucun vote enregistré pour cette phase.")
+        return
+
+    book, total_votes = result
+    print("\n=== Lauréat ===")
+    print(f"{book.book_title} ({book.isbn}) – {total_votes} voix")
+
+
 def main() -> None:
     """Programme principal."""
     print("""\
@@ -34,6 +45,7 @@ def main() -> None:
     --------------------------""")
 
     goncourt: Goncourt = Goncourt()
+    show_award_winner(goncourt)
 
     while True:
         second_selection_completed = goncourt.is_selection_complete(2)
@@ -69,7 +81,6 @@ def print_menu(second_selection_completed: bool, third_selection_completed: bool
     :param third_selection_completed:
     :return:
     """
-    print("\n=== Goncourt App ===")
     print("1. Montrer la première selection et consulter les détails d'un livre")
 
     # Option 2 : deuxième sélection
