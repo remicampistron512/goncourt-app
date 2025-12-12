@@ -13,11 +13,11 @@ class Author:
     """
     Détails d'un auteur
     """
-    id: Optional[int] = field(default=None, init=False)
+    id_author: Optional[int] = field(default=None, init=False)
     last_name: str
     first_name: str
     biography: Optional[str] = None
 
     def __str__(self) -> str:
-        author_id = self.id if self.id is not None else "?"
-        return f"[Auteur #{author_id}] {self.first_name} {self.last_name}"
+        id_author = self.id_author if self.id_author is not None else "?"
+        return f"[Auteur #{id_author}] {self.first_name} {self.last_name}"
