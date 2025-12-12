@@ -45,7 +45,8 @@ class BookDao(Dao[Book]):
 
         return book
 
-    def read_all(self) -> list[Book]:
+    @staticmethod
+    def read_all() -> list[Book]:
         """
         Renvoie tous les livres
         :return:
@@ -76,7 +77,8 @@ class BookDao(Dao[Book]):
 
         return books
 
-    def list_by_phase(self, phase_id: int) -> list[Book]:
+    @staticmethod
+    def list_by_phase(phase_id: int) -> list[Book]:
         """
              Renvoie tous les livres d'une phase
              :return:
@@ -126,8 +128,9 @@ class BookDao(Dao[Book]):
         ...
         return True
 
+    @staticmethod
     def get_remaining_books_from_previous_phase(
-            self,
+
             previous_phase_id: int,
             current_phase_id: int,
     ) -> list[Book]:
@@ -171,8 +174,9 @@ class BookDao(Dao[Book]):
 
         return books
 
+    @staticmethod
     def read_full(
-            self, book_id: int
+            book_id: int
     ) -> Optional[tuple[Book, Author, Editor, list[Character]]]:
         """
         Retourne une vue complète d'un livre accompagné de son auteur, personnages et éditeur

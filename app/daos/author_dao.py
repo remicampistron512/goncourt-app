@@ -20,6 +20,11 @@ class AuthorDao(Dao[Author]):
     """
 
     def create(self, author: Author) -> int:
+        """
+        Création
+        :param author:
+        :return:
+        """
         ...
         return 0
 
@@ -53,9 +58,19 @@ class AuthorDao(Dao[Author]):
         return author
 
     def update(self, author: Author) -> bool:
+        """
+        Mis a jour
+        :param author:
+        :return:
+        """
         ...
         return True
 
     def delete(self, author: Author) -> bool:
+        """
+        Suppression
+        :param author:
+        :return:
+        """
         ...
         return True

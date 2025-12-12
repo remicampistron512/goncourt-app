@@ -61,4 +61,3 @@ class CharacterDao(Dao[Character]):
     def delete(self, character: Character) -> bool:
         ...
         return True
-

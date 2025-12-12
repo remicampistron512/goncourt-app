@@ -52,8 +52,6 @@ class VoteDao(Dao[Vote]):
         return True
 
     def set_votes_for_book(self, nb_votes: int, id_jury_member: int, id_phase: int, id_book: int) -> None:
-
-
         """
                 Assigne un nombre de votes à un livre pour un membre et une phase.
                 Si un vote existe déjà pour (membre, phase, livre), il est mis à jour.
@@ -79,7 +77,8 @@ class VoteDao(Dao[Vote]):
 
         self.connection.commit()
 
-    def get_award_winner(self, ) -> Optional[Tuple[int,int]]:
+    @staticmethod
+    def get_award_winner() -> Optional[Tuple[int, int]]:
         """
                 Renvoie le gagnant du concours
                 """
@@ -108,7 +107,7 @@ class VoteDao(Dao[Vote]):
         """
         Supprime les votes pour une phase donnée
         """
-        with self.Dao.connection.cursor(pymysql.cursors.DictCursor) as cursor:
+        with Dao.connection.cursor(pymysql.cursors.DictCursor) as cursor:
             sql = "DELETE FROM vote WHERE vot_fk_pha_id = %s"
             cursor.execute(sql, (phase_id,))
 
