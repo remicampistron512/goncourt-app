@@ -19,7 +19,7 @@ def ask_to_view_book_details(goncourt):
 
         if book_details_full is not None:
             book, author, editor, characters = book_details_full
-            print(book)
+            print(book.to_detailed_string())
             print(author)
             print(editor)
             for c in characters:
