@@ -1,6 +1,31 @@
 from business.goncourt import Goncourt
 
 
+def ask_to_view_book_details(goncourt):
+    while True:
+        print("")
+        choice_str = input("Entrez l'id du livre pour voir les détails (ou ENTER pour arrêter) : ").strip()
+        if choice_str == "":
+            # l'utilisateur veut arrêter avant que la sélection soit pleine
+            break
+
+        try:
+            choice_id = int(choice_str)
+        except ValueError:
+            print("Id invalide, veuillez saisir un nombre.")
+            continue
+
+        book_details_full = goncourt.get_book_full_details(choice_id)
+
+        if book_details_full is not None:
+            book, author, editor, characters = book_details_full
+            print(book)
+            print(author)
+            print(editor)
+            for c in characters:
+                print(" -", c)
+
+
 def main() -> None:
     """Programme principal."""
     print("""\
@@ -19,6 +44,7 @@ def main() -> None:
         choice = input("Votre choix: ").strip()
         if choice == "1":
             show_phase(goncourt, 1)
+            ask_to_view_book_details(goncourt)
         elif choice == "2" and second_selection_completed:
             show_phase(goncourt, 2)
         elif choice == "2" and not second_selection_completed:
@@ -44,7 +70,7 @@ def print_menu(second_selection_completed: bool, third_selection_completed: bool
     :return:
     """
     print("\n=== Goncourt App ===")
-    print("1. Montrer la première selection")
+    print("1. Montrer la première selection et consulter les détails d'un livre")
 
     # Option 2 : deuxième sélection
     if not second_selection_completed:

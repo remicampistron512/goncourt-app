@@ -19,6 +19,10 @@ class Goncourt:
         – Gestion du dernier tour de scrutin
 
     """
+    @staticmethod
+    def get_book_full_details(book_id):
+        book_dao: BookDao = BookDao()
+        return book_dao.read_full(book_id)
 
     @staticmethod
     def get_all_books():

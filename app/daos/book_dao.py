@@ -6,6 +6,9 @@ Classe Dao[Book]
 from decimal import Decimal
 
 from models.book import Book
+from models.author import Author
+from models.editor import Editor
+from models.character import Character
 from daos.dao import Dao
 from dataclasses import dataclass
 from typing import Optional
@@ -32,7 +35,8 @@ class BookDao(Dao[Book]):
             cursor.execute(sql, id_book)
             record = cursor.fetchone()
         if record is not None:
-            book = Book(record['boo_title'], record['boo_summary'], record['boo_publishing_date'], record['boo_nb_pages'],record['boo_isbn'],record['boo_editor_price'])
+            book = Book(record['boo_title'], record['boo_summary'], record['boo_publishing_date'],
+                        record['boo_nb_pages'], record['boo_isbn'], record['boo_editor_price'])
             book.id_book = record['boo_id']
         else:
             book = None
@@ -78,7 +82,7 @@ class BookDao(Dao[Book]):
         with Dao.connection.cursor() as cursor:
             sql = "SELECT * FROM book JOIN contains ON cont_fk_boo_id = boo_id WHERE cont_fk_pha_id = %s"
 
-            cursor.execute(sql,phase_id)
+            cursor.execute(sql, phase_id)
             records = cursor.fetchall()
 
         books: list[Book] = []
@@ -101,7 +105,6 @@ class BookDao(Dao[Book]):
             books.append(book)
 
         return books
-
 
     def update(self, book: Book) -> bool:
         """Met à jour en BD l'entité Book correspondant à Book, pour y correspondre
@@ -127,7 +130,7 @@ class BookDao(Dao[Book]):
             current_phase_id: int,
     ) -> list[Book]:
         """
-        Retourne les livres qui étaient sélectionnés à la phase précédente
+        Retourne les livres qui étaient sélectionnés à la phase précédente,
         mais qui ne sont pas encore associés à la phase courante.
         """
         with self.connection.cursor() as cursor:
@@ -165,3 +168,98 @@ class BookDao(Dao[Book]):
             books.append(book)
 
         return books
+
+    def read_full(
+            self, book_id: int
+    ) -> Optional[tuple[Book, Author, Editor, list[Character]]]:
+        """
+        Retourne une vue complète d'un livre accompagné de son auteur, personnages et éditeur
+
+        :param book_id: boo_id du livre
+        :return: un tuple contenant (Book, Author, Editor, [Character...]) ou None.
+        """
+
+        # Livre, auteur, éditeur
+        with self.connection.cursor() as cursor:
+            sql = """
+                SELECT
+                    boo_id,
+                    boo_title,
+                    boo_summary,
+                    boo_publishing_date,
+                    boo_nb_pages,
+                    boo_isbn,
+                    boo_editor_price,
+                    aut_id,
+                    aut_last_name,
+                    aut_first_name,
+                    aut_biography,
+                    editr_id,
+                    editr_name
+                FROM book 
+                JOIN author ON aut_id = aut_id
+                JOIN editor ON editr_id = editr_id
+                WHERE boo_id = %s
+            """
+            cursor.execute(sql, (book_id,))
+            record = cursor.fetchone()
+
+        if record is None:
+            return None
+
+        # Livre
+        price = record["boo_editor_price"]
+        if isinstance(price, str):
+            price = Decimal(price)
+
+        book = Book(
+            book_title=record["boo_title"],
+            summary=record["boo_summary"],
+            publishing_date=record["boo_publishing_date"],
+            nb_pages=record["boo_nb_pages"],
+            isbn=record["boo_isbn"],
+            editor_price=price,
+        )
+        book.id = record["boo_id"]
+
+        # Auteur
+        author = Author(
+            last_name=record["aut_last_name"],
+            first_name=record["aut_first_name"],
+            biography=record["aut_biography"],
+        )
+        author.id = record["aut_id"]
+
+        # Éditeur
+        editor = Editor(
+            name=record["editr_name"],
+        )
+        editor.id = record["editr_id"]
+
+        # Personnages
+        with self.connection.cursor() as cursor:
+            sql_chars = """
+                SELECT cha_id,
+                       char_nickname,
+                       cha_last_name,
+                       cha_first_name,
+                       boo_id
+                FROM character_
+                WHERE boo_id = %s
+                ORDER BY cha_id
+            """
+            cursor.execute(sql_chars, (book_id,))
+            char_records = cursor.fetchall()
+
+        characters: list[Character] = []
+        for rec in char_records:
+            character = Character(
+                nickname=rec["char_nickname"],
+                last_name=rec["cha_last_name"],
+                first_name=rec["cha_first_name"],
+                book_id=rec["boo_id"],
+            )
+            character.id = rec["cha_id"]
+            characters.append(character)
+
+        return book, author, editor, characters
