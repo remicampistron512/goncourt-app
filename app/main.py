@@ -3,7 +3,9 @@ from business.goncourt import Goncourt
 
 def main(dev: bool = False) -> None:
     """Fonction principale qui sert d'entrée pour le reste du programme. Elle contient la logique de saisi
-    utilisateur"""
+    utilisateur
+    @todo Réduire la complexité cognitive de cette fonction
+    """
     print("""\
     --------------------------
     Bienvenue dans l'application Goncourt
