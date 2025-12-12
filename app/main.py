@@ -120,10 +120,13 @@ def print_menu(second_selection_completed: bool, third_selection_completed: bool
 
 
 def is_in_available_books(choice_id, available_books):
+    """
+     Vérifie si un id de livre est présent dans la liste des livres disponibles.
+     """
     for book in available_books:
-        if choice_id != book.id_book:
-            return False
-    return True
+        if choice_id == book.id_book:
+            return True
+    return False
 
 
 def define_selection(goncourt: Goncourt, phase_id: int) -> None:
