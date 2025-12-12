@@ -2,39 +2,50 @@ from business.goncourt import Goncourt
 
 
 def main(dev: bool = False) -> None:
-    """Programme principal."""
+    """Fonction principale qui sert d'entrée pour le reste du programme. Elle contient la logique de saisi
+    utilisateur"""
     print("""\
     --------------------------
     Bienvenue dans l'application Goncourt
     --------------------------""")
-
+    # On instancie l'application
     goncourt: Goncourt = Goncourt()
 
     while True:
+        # On vérifie si la selection d'une phase est complète pour adaptée l'affichage
         second_selection_completed = goncourt.is_selection_complete(2)
         third_selection_completed = goncourt.is_selection_complete(3)
+        # Affiche le lauréat, vide s'il n'a pas été encore désigné
         show_award_winner(goncourt)
+        # affiche le menu principal
         print_menu(second_selection_completed, third_selection_completed)
-
+        # mode développeur, pour notamment réinitialiser la bdd facilement
         if dev:
             print_dev_menu()
 
         choice = input("Votre choix: ").strip()
+        # principal flux logique permettant l'affichage des menus
 
+        # on affiche la première sélection
         if choice == "1":
             show_phase(goncourt, 1)
             ask_to_view_book_details(goncourt)
+        # la deuxième selection est complète, on l'affiche
         elif choice == "2" and second_selection_completed:
             show_phase(goncourt, 2)
+        # la deuxième selection est incomplète, on propose de la définir
         elif choice == "2" and not second_selection_completed:
             define_selection(goncourt, 2)
+        # la troisième selection est complète, on l'affiche
         elif choice == "3" and third_selection_completed:
             show_phase(goncourt, 3)
+        # la troisième selection est incomplète, on propose de la définir
         elif choice == "3" and not third_selection_completed:
             define_selection(goncourt, 3)
+        # permet d'attribuer les votes pour la phase finale
         elif choice == "4":
             cast_votes(goncourt)
-
+        # mode développeur, permet de vider certaines tables
         elif choice == "D":
             confirm = input(
                 "ATTENTION: cette action va effacer les sélections 2 & 3 et tous les votes. "
@@ -45,6 +56,7 @@ def main(dev: bool = False) -> None:
                 print("Réinitialisation effectuée.")
             else:
                 print("Réinitialisation annulée.")
+        # on quitte l'application
         elif choice == "0":
             print("Au revoir.")
             break
@@ -53,6 +65,7 @@ def main(dev: bool = False) -> None:
 
 
 def ask_to_view_book_details(goncourt):
+    """Permet l'affichage complet des détails d'un livre"""
     while True:
         print("")
         choice_str = input("Entrez l'id du livre pour voir les détails (ou ENTER pour arrêter) : ").strip()
@@ -78,6 +91,7 @@ def ask_to_view_book_details(goncourt):
 
 
 def show_award_winner(goncourt: Goncourt) -> None:
+    """Affiche le lauréat du concours"""
     result = goncourt.get_award_winner()
     if result is None:
         print("Aucun vote enregistré désignant le lauréat.")
@@ -174,7 +188,7 @@ def define_selection(goncourt: Goncourt, phase_id: int) -> None:
             continue
 
         # ajout du livre à la phase de sélection
-        if not goncourt.is_book_in_selection(phase_id, choice_id) and is_in_available_books(choice_id,available_books):
+        if not goncourt.is_book_in_selection(phase_id, choice_id) and is_in_available_books(choice_id, available_books):
             goncourt.add_book_to_phase(phase_id, choice_id)
         else:
             print("Ce livre a déjà été ajouté à la sélection ou n'est pas disponible pour cette phase"
