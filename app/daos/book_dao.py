@@ -229,13 +229,13 @@ class BookDao(Dao[Book]):
             first_name=record["aut_first_name"],
             biography=record["aut_biography"],
         )
-        author.id = record["aut_id"]
+        author.id_author = record["aut_id"]
 
         # Éditeur
         editor = Editor(
             name=record["editr_name"],
         )
-        editor.id = record["editr_id"]
+        editor.id_editor = record["editr_id"]
 
         # Personnages
         with self.connection.cursor() as cursor:
@@ -260,7 +260,7 @@ class BookDao(Dao[Book]):
                 first_name=rec["cha_first_name"],
                 book_id=rec["boo_id"],
             )
-            character.id = rec["cha_id"]
+            character.id_character = rec["cha_id"]
             characters.append(character)
 
         return book, author, editor, characters
