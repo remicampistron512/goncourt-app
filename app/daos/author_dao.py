@@ -48,7 +48,7 @@ class AuthorDao(Dao[Author]):
             first_name=record["aut_first_name"],
             biography=record["aut_biography"],
         )
-        author.id = record["aut_id"]
+        author.id_author = record["aut_id"]
         return author
 
     def update(self, author: Author) -> bool:
