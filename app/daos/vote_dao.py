@@ -82,3 +82,13 @@ class VoteDao(Dao[Vote]):
         book_id: int = record["book_id"]
         total_votes: int = record["total_votes"]
         return book_id, total_votes
+
+    def delete_by_phase(self, phase_id: int) -> None:
+        """
+        Supprime les votes pour une phase donnée
+        """
+        with self.connection.cursor() as cursor:
+            sql = "DELETE FROM vote WHERE vot_fk_pha_id = %s"
+            cursor.execute(sql, (phase_id,))
+
+        self.connection.commit()

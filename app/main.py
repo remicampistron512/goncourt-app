@@ -43,7 +43,7 @@ def main() -> None:
     --------------------------
     Bienvenue dans l'application Goncourt
     --------------------------""")
-
+    dev = True
     goncourt: Goncourt = Goncourt()
     show_award_winner(goncourt)
 
@@ -52,6 +52,9 @@ def main() -> None:
         third_selection_completed = goncourt.is_selection_complete(3)
 
         print_menu(second_selection_completed, third_selection_completed)
+
+        if dev:
+            print_dev_menu()
 
         choice = input("Votre choix: ").strip()
         if choice == "1":
@@ -67,11 +70,26 @@ def main() -> None:
             define_selection(goncourt, 3)
         elif choice == "4":
             cast_votes(goncourt)
+
+        elif choice == "D":
+            confirm = input(
+                "ATTENTION: cette action va effacer les sélections 2 & 3 et tous les votes. "
+                "Confirmer ? (o/N) : "
+            ).strip().lower()
+            if confirm == "o":
+                goncourt.reset_selections_and_votes()
+                print("Réinitialisation effectuée.")
+            else:
+                print("Réinitialisation annulée.")
         elif choice == "0":
             print("Au revoir.")
             break
         else:
             print("Choix invalide.")
+
+
+def print_dev_menu():
+    print("D. Réinitialiser l'application (vide les 2eme et 3ème selections, et les votes")
 
 
 def print_menu(second_selection_completed: bool, third_selection_completed: bool) -> None:

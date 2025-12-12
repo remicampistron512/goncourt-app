@@ -147,3 +147,18 @@ class Goncourt:
         book_dao: BookDao = BookDao()
         book = book_dao.read(book_id)
         return book, total_votes
+
+    @staticmethod
+    def reset_selections_and_votes() -> None:
+        """
+        Reinitialise les votes et les selections
+        """
+
+        phase_dao: PhaseDao = PhaseDao()
+        vote_dao: VoteDao = VoteDao()
+        # Reinitialise les selections
+        phase_dao.clear_selection_for_phase(2)
+        phase_dao.clear_selection_for_phase(3)
+
+        # Reinitialise les votes
+        vote_dao.delete_by_phase(4)

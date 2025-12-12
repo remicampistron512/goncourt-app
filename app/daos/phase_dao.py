@@ -14,7 +14,6 @@ from models.phase import Phase
 @dataclass
 class PhaseDao(Dao[Phase]):
 
-    # TODO: implémenter create/read/update/delete ou laisser PhaseDao abstraite
     def create(self, phase: Phase) -> int:
         ...
         return 0
@@ -108,3 +107,14 @@ class PhaseDao(Dao[Phase]):
         current_count = row["nb"] if row is not None else 0
 
         return current_count >= phase.nb_books
+
+    def clear_selection_for_phase(self, phase_id: int) -> None:
+        """
+        Enleve toutes les selections de livres pour une phase donnée
+
+        """
+        with self.connection.cursor() as cursor:
+            sql = "DELETE FROM contains WHERE cont_fk_pha_id = %s"
+            cursor.execute(sql, (phase_id,))
+
+        self.connection.commit()
