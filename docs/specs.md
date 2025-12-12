@@ -41,7 +41,6 @@
 * consulter les résultats du dernier tour :
 
   * afficher le lauréat (livre ayant le plus de voix)
-  * afficher les autres finalistes avec leur nombre de voix
 
 ---
 
