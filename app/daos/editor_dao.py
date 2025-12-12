@@ -44,7 +44,7 @@ class EditorDao(Dao[Editor]):
         editor = Editor(
             name=record["editr_name"],
         )
-        editor.id = record["editr_id"]
+        editor.id_editor = record["editr_id"]
         return editor
 
     def update(self, editor: Editor) -> bool:
