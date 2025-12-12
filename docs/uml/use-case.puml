@@ -27,7 +27,7 @@ rectangle "Goncourt App" as System {
 
   ' --- Cas d’utilisation futurs : authentification & vote membres ---
   usecase "S'authentifier" as UC_Authenticate
-  usecase "Voter pour la 2e sélection" as UC_VoteSecond
+  usecase "D pour la 2e sélection" as UC_VoteSecond
   usecase "Voter pour la 3e sélection" as UC_VoteThird
   usecase "Voter pour le lauréat" as UC_VoteWinner
   usecase "Calculer automatiquement\n les sélections et le lauréat" as UC_ComputeResults

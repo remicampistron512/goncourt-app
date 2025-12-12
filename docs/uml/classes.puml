@@ -65,7 +65,9 @@ class Participate {
 
 class Vote {
   +id_vote : int
-  +nb_votes : int
+  +id_jury_member:int
+  +id_phase
+  +id_book
 }
 
 ' ======================
