@@ -15,6 +15,11 @@ from models.phase import Phase
 class PhaseDao(Dao[Phase]):
 
     def create(self, phase: Phase) -> int:
+        """
+        Création d'une phase de sélection
+        :param phase:
+        :return:
+        """
         ...
         return 0
 
@@ -37,13 +42,29 @@ class PhaseDao(Dao[Phase]):
         return phase
 
     def update(self, phase: Phase) -> bool:
+        """
+        Mis à jour d'une phase de sélection
+        :param phase:
+        :return:
+        """
         ...
         return True
 
     def delete(self, phase: Phase) -> bool:
+        """
+        Suppression d'une phase de sélection
+        :param phase:
+        :return:
+        """
         ...
+        return True
 
     def is_selection_not_empty(self, phase_id: int) -> bool:
+        """
+        Détermine si une phase est vide
+        :param phase_id:
+        :return:
+        """
         with self.connection.cursor() as cursor:
             sql = """
                 SELECT 1

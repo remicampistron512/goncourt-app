@@ -14,8 +14,12 @@ from models.editor import Editor
 @dataclass
 class EditorDao(Dao[Editor]):
 
-
     def create(self, editor: Editor) -> int:
+        """
+        Creation d'un éditeur
+        :param editor:
+        :return:
+        """
         ...
         return 0
 
@@ -44,11 +48,19 @@ class EditorDao(Dao[Editor]):
         return editor
 
     def update(self, editor: Editor) -> bool:
+        """
+        Mis à jour d'un éditeur
+        :param editor:
+        :return:
+        """
         ...
         return True
-
 
     def delete(self, editor: Editor) -> bool:
+        """
+        Suppression d'un éditeur
+        :param editor:
+        :return:
+        """
         ...
         return True
-

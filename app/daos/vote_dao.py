@@ -5,7 +5,7 @@ Classe Dao[Vote]
 """
 
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Tuple
 
 from daos.dao import Dao
 from models.vote import Vote
@@ -14,24 +14,44 @@ from models.vote import Vote
 @dataclass
 class VoteDao(Dao[Vote]):
 
-    # TODO: implémenter create/read/update/delete ou laisser VoteDao abstraite
     def create(self, vote: Vote) -> int:
+        """
+        Création d'un vote
+        :param vote:
+        :return:
+        """
         ...
         return 0
 
     def read(self, id_vote: int) -> Optional[Vote]:
+        """
+        Affichage d'un vote
+        :param id_vote:
+        :return:
+        """
         ...
         return None
 
     def update(self, vote: Vote) -> bool:
+        """
+        Mis à jour d'un vote
+        :param vote:
+        :return:
+        """
         ...
         return True
 
     def delete(self, vote: Vote) -> bool:
+        """
+        Suppression d'un vote
+        :param vote:
+        :return:
+        """
         ...
+        return True
 
     def set_votes_for_book(self, nb_votes: int, id_jury_member: int, id_phase: int, id_book: int) -> None:
-        # ici, on assigne un seul vote par défaut
+
 
         """
                 Assigne un nombre de votes à un livre pour un membre et une phase.
@@ -58,7 +78,7 @@ class VoteDao(Dao[Vote]):
 
         self.connection.commit()
 
-    def get_award_winner(self, ):
+    def get_award_winner(self, ) -> Optional[Tuple[int,int]]:
         """
                 Renvoie le gagnant du concours
                 """
