@@ -47,7 +47,7 @@ class CharacterDao(Dao[Character]):
             first_name=record["cha_first_name"],
             book_id=record["boo_id"],
         )
-        character.id = record["cha_id"]
+        character.id_character = record["cha_id"]
         return character
 
     def update(self, character: Character) -> bool:

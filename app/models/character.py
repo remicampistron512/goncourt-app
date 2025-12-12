@@ -14,14 +14,14 @@ class Character:
     Représente les personnages principaux d'un livre
 
     """
-    id: Optional[int] = field(default=None, init=False)
+    id_character: Optional[int] = field(default=None, init=False)
     nickname: str
     last_name: str
     first_name: str
     book_id: int
 
     def __str__(self) -> str:
-        char_id = self.id if self.id is not None else "?"
+        char_id = self.id_character if self.id_character is not None else "?"
 
         full_name_parts: list[str] = []
         if self.first_name:
