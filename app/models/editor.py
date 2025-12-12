@@ -13,9 +13,9 @@ class Editor:
     """
     représente un éditeur
     """
-    id: Optional[int] = field(default=None, init=False)
+    id_editor: Optional[int] = field(default=None, init=False)
     name: str
 
     def __str__(self) -> str:
-        editor_id = self.id if self.id is not None else "?"
-        return f"[Editeur #{editor_id}] {self.name}"
+        id_editor = self.id_editor if self.id_editor is not None else "?"
+        return f"[Editeur #{id_editor}] {self.name}"
